@@ -100,9 +100,26 @@ python manage.py runserver
 ```
 
 ## Error Handling
-#### Error Codes: Alerts for invalid key/IV formats, incorrect lengths, and decryption failures.
-#### Recovery Procedures: Guide users to correct key/IV input and retry operations after errors.
+### Error Codes: List of Possible Errors
+- "Hex key must be 32 characters long!"
+  - The key in hex format does not meet the required length for AES-128 (similarly for 48/64 characters for AES-192/256).
+- "Custom key must be 16 characters long!"
+  - The key in text format does not meet the required length for AES-128 (or the equivalent for AES-192/256).
+- "Custom IV must be 16 characters long!" - The IV in text format does not meet the required 16 characters for AES encryption.
+- "Hex IV must be 32 characters long!"
+  - The IV in hex format does not meet the required length (16 bytes).
+- "Decryption Error: Incorrect padding or invalid key/IV."
+  - A decryption failure due to an invalid key, IV, or corrupted ciphertext.
 
+### Recovery Procedures
+- Invalid Key/IV Length or Format
+  - Correct the input and resubmit
+- Invalid Hex Input
+  - Remove non-hex characters and resubmit
+- Encryption/Decryption Failure
+  - Review and correct the input, ensuring the same key and IV used for encryption are supplied for decryption.
+- Form Resubmission
+  - After encountering an error, the user can correct the error and resubmit the form without needing to reload the page.
 
 ## Maintenance Log
 
