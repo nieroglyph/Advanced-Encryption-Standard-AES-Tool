@@ -22,50 +22,51 @@
 
 ## Functional Description:
 
-Input: Expected data formats and sources.
+### Input: Expected Data Formats and Sources
+- Plaintext Message: The user provides a message to be encrypted. This can be any string of text.
+- Ciphertext: The encrypted message, input by the user during decryption.
+- Key: The key used for AES encryption/decryption. It can be provided in either text or hexadecimal format.
+  - Text format: Must match the key size (16 characters for 128-bit, 24 for 192-bit, or 32 for 256-bit).
+  - Hex format: Must be twice the key size in characters (32 characters for 128-bit, 48 for 192-bit, 64 for 256-bit).
+- Initialization Vector (IV): The IV can be input in either text or hex format.
+  - Text format: 16 characters long.
+  - Hex format: 32 characters long.
+- Key Size: Users choose the key size from options 128, 192, or 256 bits.
+- IV Format: Users specify whether the IV is in text or hex format.
+- Key Format: Users specify whether the key is in text or hex format.
+
+### Processing: A Step-by-Step Explanation of the Program's Logic
+#### Encryption:
+
+The user can select from four modes of operation: Electronic Code Book (ECB), Cipher Block Chaining (CBC), 
+Cipher FeedBack mode (CFB), Output FeedBack (OFB). The user then inputs the plaintext message, key, 
+and IV (or lets the system generate random ones). The script validates the key and IV based on 
+the user-specified format (text or hex) and key size. If the input passes validation, the message 
+is encrypted using the AES algorithm in different modes. The system generates the ciphertext as the output.
+
+#### Decyption:
+
+The user inputs the ciphertext, key, and IV.
+The system validates the key and IV formats.
+If valid, the system decrypts the ciphertext using the AES algorithm and returns the original plaintext.
+
+#### Validation:
+
+For keys and IVs in hex format, the system verifies that the input is a valid hex string of the correct length.
+For text format, the system ensures the input matches the correct length (based on the key size and IV).
+
+### Output: Generated Data, Formats, and Destinations
+
+Encryption Output: Ciphertext generated from the plaintext message using AES encryption. This ciphertext is displayed to the user.
 
 
-Processing:
- 
-AES Encryption Process:
-The user provides the plaintext (the data to be encrypted), the encryption key, the mode of operation (like ECB or CBC), and an optional initialization vector (IV).
-The encryption key must be of a specific length (128, 192, or 256 bits). If using modes that require an IV (like CBC), generate a random IV or use a user-provided one.
-An AES cipher object is created using the key and the specified mode. The mode determines how blocks of data are processed (e.g., whether the same key can encrypt multiple blocks independently).
-If using block modes (like ECB or CBC), the plaintext is padded to ensure its length is a multiple of the AES block size (16 bytes). This prevents issues during encryption.
-The padded plaintext is processed in blocks. Each block is transformed using the AES algorithm, which involves several rounds of substitution and permutation operations based on the key. The final output is ciphertext, which appears random and unreadable.
-
-AES Decryption Process:
-The user provides the ciphertext, the same key used for encryption, and the IV if required by the mode.
-A new AES cipher object is created using the same key and IV (if applicable).
-The ciphertext is processed in blocks. The AES algorithm reverses the encryption operations, transforming the ciphertext back into padded plaintext.
-After decryption, the plaintext may still be padded. The padding is removed to retrieve the original data.
-The result is the original plaintext, now restored from the ciphertext.
-
-Output: Generated data, formats, and destinations.
+Decryption Output: The original plaintext generated from the provided ciphertext, key, and IV during the decryption process.
 
 
 ## Security Considerations
-
-Vulnerability Assessment: 
-Using weak or easily guessable keys (e.g., short keys or common phrases).
-Poor handling of keys, such as hardcoding them in the source code or storing them insecurely.
- Reusing the same IV with the same key in modes like CBC can lead to predictable patterns in ciphertext.
-Without proper authentication, an attacker could modify the ciphertext without detection.
-Sending sensitive data over insecure channels (e.g., HTTP instead of HTTPS) exposes it to interception.
-
-Mitigation Strategies:
-Ensure keys are generated using a secure random number generator and are of appropriate length (128, 192, or 256 bits).
-Use secure key management practices, such as environment variables, secure vaults, or hardware security modules (HSMs).
- Always generate a new, random IV for each encryption operation and ensure it is unique.
-Implement message authentication codes (MACs) or use authenticated encryption schemes.
-Always use secure transport protocols like TLS to encrypt data in transit.
-
-Testing: 
-Key Rotation: Implement regular key rotation and verify that old keys are securely retired.
-Code Review: Conduct thorough code reviews focusing on cryptographic implementations, looking for hardcoded keys, improper IV handling, or insecure practices.
-Functional Testing: Verify that the encryption and decryption processes function correctly, consistently producing the expected output.
-Boundary Testing : Test with edge cases, such as maximum and minimum input sizes, to ensure robustness.
-Penetration Testing: Conduct regular penetration testing to assess the security posture and identify possible attack vectors.
+#### Vulnerability Assessment: Risks include weak keys, predictable IVs, or insecure modes like ECB.
+#### Mitigation Strategies: Enforce strong key/IV generation, limit ECB usage, and validate input lengths.
+#### Testing: Regular checks to ensure keys and encryption are secure, with input validation to prevent incorrect formats.
 
 
 ## Usage Instructions
@@ -98,26 +99,8 @@ python manage.py runserver
 ```
 
 ## Error Handling
-
-Error Codes: A list of possible errors and their meanings.
-ModuleNotFoundError - Indicates that a required module or package (e.g., Crypto) is not installed or cannot be found.
-ValueError - Raised when an invalid value is encountered, such as an unsupported encryption mode or incorrect key size.
-KeyError - Occurs when trying to access a dictionary key that does not exist, often related to settings or configuration.
-InvalidKeyException - Raised when the provided key length is not valid (must be 16, 24, or 32 bytes).
-InvalidIVException - Occurs when the initialization vector (IV) provided is of incorrect length or format.
-EncryptionError - A general error that occurs during the encryption process, indicating that something went wrong.
-DecryptionError - Similar to EncryptionError, but indicates an issue during the decryption process.
-Http404 - Raised when a requested URL is not found in the Django application.
-
-## Recovery Procedures:
-Install the necessary package using pip install pycryptodome.
-Ensure that the mode and key size provided are valid and supported by the AES implementation.
-Verify that all required keys in your configurations or data structures are present.
- Use a key of the appropriate length according to AES specifications.
- Ensure that the IV is the correct length (16 bytes for AES) and properly formatted.
-Review the error message for specifics and check inputs, keys, and configuration.
- Check that the ciphertext and keys are valid and that the correct decryption mode is being used.
-Ensure that the URL patterns are correctly configured and that the views are properly defined.
+#### Error Codes: Alerts for invalid key/IV formats, incorrect lengths, and decryption failures.
+#### Recovery Procedures: Guide users to correct key/IV input and retry operations after errors.
 
 
 ## Maintenance Log
