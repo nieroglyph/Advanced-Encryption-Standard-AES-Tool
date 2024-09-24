@@ -46,10 +46,18 @@
         function toggleIvField(formId) {
             let mode = document.getElementById('mode_' + formId).value;
             let ivField = document.getElementById('iv-field_' + formId);
+            let ivFormatField = document.getElementById('iv_format_' + formId);
+
             if (mode === 'ECB') {
                 ivField.classList.add('hidden');
+                if (ivFormatField) {
+                    ivFormatField.parentElement.classList.add('hidden');  // Hide IV format dropdown
+                }
             } else {
                 ivField.classList.remove('hidden');
+                if (ivFormatField) {
+                    ivFormatField.parentElement.classList.remove('hidden');  // Show IV format dropdown
+                }
             }
         }
 
@@ -58,14 +66,15 @@
             let keyInput = document.getElementById('key_input_' + formId).value;
             let ivInput = document.getElementById('iv_input_' + formId) ? document.getElementById('iv_input_' + formId).value : null;
             let mode = document.getElementById('mode_' + formId).value;
-            let keyFormat = formId === 'decrypt' ? document.getElementById('key_format_' + formId).value : 'text';  // Detect key format in decryption
+            let keyFormat = formId === 'decrypt' ? document.getElementById('key_format_' + formId).value : 'text';
+            let ivFormat = formId === 'decrypt' ? document.getElementById('iv_format_' + formId).value : 'text';
 
             // Validate key length
             if (keyInput) {
                 if (keyFormat === 'hex' && keyInput.length !== (keySize / 8) * 2) {
                     alert(`Hex key must be ${(keySize / 8) * 2} characters long!`);
                     return false;
-                } else if (keyFormat !== 'hex' && keyInput.length !== keySize / 8) {
+                } else if (keyFormat === 'text' && keyInput.length !== keySize / 8) {
                     alert(`Custom key must be ${keySize / 8} characters long!`);
                     return false;
                 }
@@ -73,10 +82,10 @@
 
             // Validate IV length if mode is not ECB
             if (ivInput && mode !== 'ECB') {
-                if (keyFormat === 'hex' && ivInput.length !== 32) {
+                if (ivFormat === 'hex' && ivInput.length !== 32) {
                     alert(`Hex IV must be 32 characters long!`);
                     return false;
-                } else if (keyFormat !== 'hex' && ivInput.length !== 16) {
+                } else if (ivFormat === 'text' && ivInput.length !== 16) {
                     alert(`Custom IV must be 16 characters long!`);
                     return false;
                 }
@@ -84,6 +93,7 @@
 
             return true;
         }
+
 
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('mode_encrypt').addEventListener('change', () => toggleIvField('encrypt'));
@@ -98,6 +108,7 @@
                 return validateForm('decrypt');
             };
         });
+
     </script>
 </head>
 <body>
@@ -187,11 +198,13 @@
                 <input type="text" id="key_input_decrypt" name="key_input" required><br>
 
                 <!-- New: Add IV Format Option -->
-                <label for="iv_format_decrypt">IV Format:</label>
-                <select id="iv_format_decrypt" name="iv_format">
-                    <option value="hex">Hex</option>
-                    <option value="text">Text</option>
-                </select><br>
+                <div id="iv-format-container_decrypt"> <!-- Added a div wrapper with id -->
+                    <label for="iv_format_decrypt">IV Format:</label>
+                    <select id="iv_format_decrypt" name="iv_format">
+                        <option value="hex">Hex</option>
+                        <option value="text">Text</option>
+                    </select><br>
+                </div>
 
                 <div id="iv-field_decrypt" class="hidden">
                     <label for="iv_input_decrypt">Custom IV:</label>
