@@ -31,7 +31,7 @@ def encryption_decryption_view(request):
     generated_key = None
     generated_iv = None
     result_message = None  # Message to be displayed in case of validation errors
-    
+
     if request.method == 'POST':
         action = request.POST.get('action')
         key_size = int(request.POST.get('key_size'))
@@ -41,19 +41,17 @@ def encryption_decryption_view(request):
         key_format = request.POST.get('key_format')  # For decryption only
         iv_format = request.POST.get('iv_format')    # For decryption only
 
-        # Check if custom key is provided; if not, generate a random key for encryption
+        # Encryption logic
         if action == 'encrypt':
             if key_input:
-                # Key format validation (text only for encryption)
                 if len(key_input) != key_size // 8:
                     result_message = f'Custom key must be {key_size // 8} characters long!'
                     return render(request, 'encrypt_decrypt.html', {'result_message': result_message})
-                key = key_input.encode('utf-8')  # Convert custom key to bytes
+                key = key_input.encode('utf-8')
             else:
                 key = generate_random_key(key_size)
                 generated_key = binascii.hexlify(key).decode()
 
-            # Check if custom IV is provided; if not, generate a random IV for encryption
             if iv_input and mode != 'ECB':
                 if len(iv_input) != AES.block_size:
                     result_message = f'Custom IV must be {AES.block_size} characters long!'
@@ -70,43 +68,43 @@ def encryption_decryption_view(request):
             encrypted_data = cipher.encrypt(pad(data.encode(), AES.block_size))
             encrypt_result = binascii.hexlify(encrypted_data).decode().upper()
 
+        # Decryption logic
         elif action == 'decrypt':
             encrypted_data = request.POST.get('encrypted_data')
 
-            # Handle key format (either hex or text)
+            # Key validation
             if key_format == 'hex':
                 try:
-                    # Ensure the hex key is twice the key size in characters
                     if len(key_input) != (key_size // 8) * 2:
                         result_message = f'Hex key must be {(key_size // 8) * 2} characters long!'
                         return render(request, 'encrypt_decrypt.html', {'result_message': result_message})
-                    key = binascii.unhexlify(key_input)  # Convert hex input to bytes
+                    key = binascii.unhexlify(key_input)
                 except binascii.Error:
                     result_message = 'Invalid hex key format!'
                     return render(request, 'encrypt_decrypt.html', {'result_message': result_message})
             else:
-                # Ensure the text key is key size / 8 in characters
                 if len(key_input) != key_size // 8:
                     result_message = f'Custom key must be {key_size // 8} characters long!'
                     return render(request, 'encrypt_decrypt.html', {'result_message': result_message})
-                key = key_input.encode('utf-8')  # Convert custom key to bytes
+                key = key_input.encode('utf-8')
 
-            # Check and process IV
+            # IV validation
             if mode != 'ECB':
                 if iv_input:
                     try:
                         if iv_format == 'hex':
-                            # Ensure the hex IV is 32 characters (16 bytes)
-                            if len(iv_input) != AES.block_size * 2:  # 32 characters for hex
-                                result_message = f'Hex IV must be {AES.block_size * 2} characters long!'  # 32 characters for 16-byte IV
+                            if len(iv_input) != 32:
+                                result_message = 'Hex IV must be 32 characters long!'
                                 return render(request, 'encrypt_decrypt.html', {'result_message': result_message})
-                            iv = binascii.unhexlify(iv_input)  # Convert hex IV input to bytes
+                            iv = binascii.unhexlify(iv_input)
+                        elif iv_format == 'text':
+                            if len(iv_input) != 16:
+                                result_message = 'Custom IV must be 16 characters long!'
+                                return render(request, 'encrypt_decrypt.html', {'result_message': result_message})
+                            iv = iv_input.encode('utf-8')
                         else:
-                            # Ensure the text IV is 16 characters (16 bytes)
-                            if len(iv_input) != AES.block_size:  # 16 characters for text
-                                result_message = f'Custom IV must be {AES.block_size} characters long!'  # 16 characters for 16-byte IV
-                                return render(request, 'encrypt_decrypt.html', {'result_message': result_message})
-                            iv = iv_input.encode('utf-8')  # Convert custom IV to bytes
+                            result_message = 'Invalid IV format selected!'
+                            return render(request, 'encrypt_decrypt.html', {'result_message': result_message})
                     except binascii.Error:
                         result_message = 'Invalid hex IV format!'
                         return render(request, 'encrypt_decrypt.html', {'result_message': result_message})
@@ -116,10 +114,6 @@ def encryption_decryption_view(request):
             else:
                 iv = None
 
-
-
-
-
             # Decrypt data
             try:
                 cipher = get_cipher(key, mode, iv)
@@ -127,6 +121,7 @@ def encryption_decryption_view(request):
                 decrypt_result = decrypted_data.decode('utf-8')
             except (ValueError, KeyError):
                 decrypt_result = 'Decryption Error: Incorrect padding or invalid key/IV.'
+
 
     return render(request, 'encrypt_decrypt.html', {
         'encrypt_result': encrypt_result,
