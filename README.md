@@ -20,7 +20,7 @@
 #### Libraries: pycryptodome for encryption functionality
 
 
-# Functional Description:
+## Functional Description:
 
 Input: Expected data formats and sources.
 
@@ -44,7 +44,7 @@ The result is the original plaintext, now restored from the ciphertext.
 Output: Generated data, formats, and destinations.
 
 
-# Security Considerations
+## Security Considerations
 
 Vulnerability Assessment: 
 Using weak or easily guessable keys (e.g., short keys or common phrases).
@@ -68,7 +68,7 @@ Boundary Testing : Test with edge cases, such as maximum and minimum input sizes
 Penetration Testing: Conduct regular penetration testing to assess the security posture and identify possible attack vectors.
 
 
-# Usage Instructions
+## Usage Instructions
 
 ### Prerequisites:
 - At least Python v3.6 (or higher)
@@ -97,7 +97,7 @@ cd aes_project
 python manage.py runserver
 ```
 
-# Error Handling
+## Error Handling
 
 Error Codes: A list of possible errors and their meanings.
 ModuleNotFoundError - Indicates that a required module or package (e.g., Crypto) is not installed or cannot be found.
@@ -109,7 +109,7 @@ EncryptionError - A general error that occurs during the encryption process, ind
 DecryptionError - Similar to EncryptionError, but indicates an issue during the decryption process.
 Http404 - Raised when a requested URL is not found in the Django application.
 
-# Recovery Procedures:
+## Recovery Procedures:
 Install the necessary package using pip install pycryptodome.
 Ensure that the mode and key size provided are valid and supported by the AES implementation.
 Verify that all required keys in your configurations or data structures are present.
@@ -120,31 +120,20 @@ Review the error message for specifics and check inputs, keys, and configuration
 Ensure that the URL patterns are correctly configured and that the views are properly defined.
 
 
-# Maintenance Log
+## Maintenance Log
 
-Date: Sept 21, 2024
-
-Changes: Project start
-
-Author: Rein Mark Del Rosario
-
-
-Date: Sept 21, 2024
-
-Changes: Implement initial AES encrypt/decrypt script
-
-Author: Rein Mark Del Rosario
-
-
-Date: Sept 23, 2024
-
-Changes: Implement Django Web Framework to build web page
-
-Author: Rein Mark Del Rosario
-
-
-Date: Sept 24, 2024
-
-Changes: Add CSS stylesheet
-
-Author: Jose Vyncent Ramos
+Date: Sept 21, 2024 </br>
+Changes: Project start </br>
+Author: Rein Mark Del Rosario </br>
+</br>
+Date: Sept 21, 2024 </br>
+Changes: Implement initial AES encrypt/decrypt script </br>
+Author: Rein Mark Del Rosario </br>
+</br>
+Date: Sept 23, 2024 </br>
+Changes: Implement Django Web Framework to build web page </br>
+Author: Rein Mark Del Rosario </br>
+</br>
+Date: Sept 24, 2024 </br>
+Changes: Add CSS stylesheet </br>
+Author: Jose Vyncent Ramos </br>
