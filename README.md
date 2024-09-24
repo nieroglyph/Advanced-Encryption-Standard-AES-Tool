@@ -1,10 +1,11 @@
 # Advanced Encryption Standard AES Tool
 
-## Provides secure data protection by converting readable information into an unreadable format. 
+## This project implements AES encryption and decryption with multiple modes (ECB, CBC, CFB, OFB) in a Django web application.
 
 ### Authors: Rein Mark Del Rosario & Jose Vyncent Ramos 
 ### Date: Last Edited Sept 24, 2024
 ### Version: 1.0 
+### Purpose: To provide a user-friendly web interface for encryption and decryption of data using AES encryption with various operations (ECB, CBC, CFB, OFB). The project aims to demonstrate the principles of the algorithm while ensuring data security and handling potential errors in the process.
 
 ## System Requirements: 
 
